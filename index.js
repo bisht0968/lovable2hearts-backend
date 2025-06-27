@@ -198,37 +198,81 @@ app.post('/login', async (req, res) => {
 })
 
 
-app.post('/addproduct', async (req, res) => {
+// app.post('/addproduct', async (req, res) => {
 
+//     let products = await Product.find({});
+//     let id;
+//     if (products.length > 0) {
+//         let last_product = products[products.length - 1];
+//         id = last_product.id + 1;
+//     } else {
+//         id = 1;
+//     }
+//     const product = new Product({
+//         id: id,
+//         name: req.body.name,
+//         image: req.body.image,
+//         category: req.body.category,
+//         price: req.body.price,
+//         deal_price: req.body.deal_price,
+//         description: req.body.description,
+//         quantity: req.body.quantity
+//     });
+//     console.log(product);
+//     await product.save();
+//     console.log("Saved");
+//     res.json({
+//         success: true,
+//         name: req.body.name,
+//         image: req.body.image,
+//     });
+// });
+
+app.post('/addproduct', async (req, res) => {
     let products = await Product.find({});
-    let id;
-    if (products.length > 0) {
-        let last_product = products[products.length - 1];
-        id = last_product.id + 1;
-    } else {
-        id = 1;
-    }
+    let id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+
     const product = new Product({
         id: id,
         name: req.body.name,
-        image: req.body.image,
+        image: [{
+            url: req.body.image.url,
+            filename: req.body.image.filename
+        }],
         category: req.body.category,
         price: req.body.price,
         deal_price: req.body.deal_price,
         description: req.body.description,
         quantity: req.body.quantity
     });
-    console.log(product);
+
     await product.save();
-    console.log("Saved");
-    res.json({
-        success: true,
-        name: req.body.name,
-        image: req.body.image,
-    });
+    res.json({ success: true, product });
 });
 
+app.post('/addproducts', async (req, res) => {
+    const products = req.body.products;
 
+    let existing = await Product.find({});
+    let nextId = existing.length > 0 ? existing[existing.length - 1].id + 1 : 1;
+
+    const newProducts = products.map((p, index) => ({
+        id: nextId + index,
+        name: p.name,
+        image: [{
+            url: p.image.url,
+            filename: p.image.filename
+        }],
+        category: p.category,
+        price: p.price,
+        deal_price: p.deal_price,
+        description: p.description,
+        quantity: p.quantity
+    }));
+
+    await Product.insertMany(newProducts);
+    res.json({ success: true, count: newProducts.length });
+});
 
 app.post('/removeproduct', async (req, res) => {
     await Product.findOneAndDelete({
