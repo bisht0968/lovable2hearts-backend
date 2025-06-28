@@ -260,8 +260,8 @@ app.post('/addproducts', async (req, res) => {
         id: nextId + index,
         name: p.name,
         image: [{
-            url: p.image.url,
-            filename: p.image.filename
+            url: p.image[0].url,
+            filename: p.image[0].filename
         }],
         category: p.category,
         price: p.price,
