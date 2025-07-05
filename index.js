@@ -19,8 +19,8 @@ const secretKey = process.env.SECRET_KEY
 
 mongoose.connect(mongoURI);
 
-app.get("/", (req, res) => {
-    res.send("Express App is Running");
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'Backend is alive ✅' });
 });
 
 
@@ -196,37 +196,6 @@ app.post('/login', async (req, res) => {
         })
     }
 })
-
-
-// app.post('/addproduct', async (req, res) => {
-
-//     let products = await Product.find({});
-//     let id;
-//     if (products.length > 0) {
-//         let last_product = products[products.length - 1];
-//         id = last_product.id + 1;
-//     } else {
-//         id = 1;
-//     }
-//     const product = new Product({
-//         id: id,
-//         name: req.body.name,
-//         image: req.body.image,
-//         category: req.body.category,
-//         price: req.body.price,
-//         deal_price: req.body.deal_price,
-//         description: req.body.description,
-//         quantity: req.body.quantity
-//     });
-//     console.log(product);
-//     await product.save();
-//     console.log("Saved");
-//     res.json({
-//         success: true,
-//         name: req.body.name,
-//         image: req.body.image,
-//     });
-// });
 
 app.post('/addproduct', async (req, res) => {
     let products = await Product.find({});
